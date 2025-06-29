@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Task Management System Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        /* [Your existing CSS code here - no changes needed] */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; color: #333; }
+        .dashboard-container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; color: white; margin-bottom: 30px; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .header p { font-size: 1.2rem; opacity: 0.9; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .metric-card { background: rgba(255, 255, 255, 0.95); padding: 25px; border-radius: 15px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); transition: transform 0.3s ease; }
+        .metric-card:hover { transform: translateY(-5px); }
+        .metric-card h3 { color: #4a5568; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+        .metric-value { font-size: 2.5rem; font-weight: bold; color: #2d3748; margin-bottom: 5px; }
+        .metric-change { font-size: 0.85rem; color: #68d391; }
+        .charts-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .chart-container { background: rgba(255, 255, 255, 0.95); padding: 25px; border-radius: 15px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
+        .chart-title { font-size: 1.3rem; font-weight: 600; color: #2d3748; margin-bottom: 20px; text-align: center; }
+        .predictions-section { background: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 15px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); margin-bottom: 20px; }
+        .prediction-form { display: flex; gap: 15px; margin-bottom: 20px; }
+        .prediction-input { flex: 1; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; transition: border-color 0.3s ease; }
+        .prediction-input:focus { outline: none; border-color: #667eea; }
+        .predict-btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1rem; cursor: pointer; transition: transform 0.2s ease; }
+        .predict-btn:hover { transform: translateY(-2px); }
+        .prediction-result { background: #f7fafc; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea; margin-top: 15px; }
+        .model-performance { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .performance-card { background: rgba(255, 255, 255, 0.95); padding: 25px; border-radius: 15px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
+        .performance-metric { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .metric-name { font-weight: 600; color: #4a5568; }
+        .metric-score { font-weight: bold; color: #2d3748; }
+        .progress-bar { width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; margin-top: 5px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); transition: width 0.3s ease; }
+        .recommendations { background: rgba(255, 255, 255, 0.95); padding: 25px; border-radius: 15px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
+        .recommendation-item { display: flex; align-items: center; padding: 15px; margin-bottom: 10px; background: #f7fafc; border-radius: 8px; border-left: 4px solid #ffd700; }
+        .recommendation-icon { font-size: 1.5rem; margin-right: 15px; }
+        @media (max-width: 768px) { .header h1 { font-size: 2rem; } .prediction-form { flex-direction: column; } .charts-section { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🤖 AI-Powered Task Management System</h1>
+            <p>Intelligent Task Classification, Priority Prediction & Workload Balancing</p>
+        </div>
+
+        <!-- Key Metrics -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <h3>Total Tasks</h3>
+                <div class="metric-value" id="totalTasks">...</div>
+            </div>
+            <div class="metric-card">
+                <h3>Completed Tasks</h3>
+                <div class="metric-value" id="completedTasks">...</div>
+            </div>
+            <div class="metric-card">
+                <h3>High Priority</h3>
+                <div class="metric-value" id="highPriorityTasks">...</div>
+            </div>
+            <div class="metric-card">
+                <h3>AI Accuracy</h3>
+                <div class="metric-value" id="aiAccuracy">...%</div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-section">
+            <div class="chart-container">
+                <div class="chart-title">Task Category Distribution</div>
+                <canvas id="categoryChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">Priority Distribution</div>
+                <canvas id="priorityChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Model Performance -->
+        <div class="model-performance">
+            <div class="performance-card" id="category-performance-card">
+                <h3 style="margin-bottom: 20px; color: #2d3748; font-size: 1.2rem;">🎯 Category Classifier Performance</h3>
+            </div>
+            <div class="performance-card" id="priority-performance-card">
+                <h3 style="margin-bottom: 20px; color: #2d3748; font-size: 1.2rem;">⚡ Priority Predictor Performance</h3>
+            </div>
+        </div>
+
+        <!-- AI Prediction Section -->
+        <div class="predictions-section">
+            <h3 style="margin-bottom: 20px; color: #2d3748; font-size: 1.3rem;">🔮 AI Task Prediction</h3>
+            <form class="prediction-form" onsubmit="predictTask(event)">
+                <input type="text" class="prediction-input" id="taskDescription" placeholder="Enter task description..." required>
+                <button type="submit" class="predict-btn">Predict</button>
+            </form>
+            <div id="predictionResult"></div>
+        </div>
+    </div>
+<script>
+    // =========================================================================
+    //  URL for local development. This empty string is correct.
+    // =========================================================================
+    const API_BASE_URL = "";
+
+    function createPerformanceMetric(name, score) {
+        const scorePercent = (score * 100).toFixed(1);
+        return `
+            <div class="performance-metric">
+                <span class="metric-name">${name}</span>
+                <span class="metric-score">${scorePercent}%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: ${scorePercent}%"></div>
+            </div>`;
+    }
+
+    async function initializeDashboard() {
+        try {
+            // The empty API_BASE_URL means this will call http://127.0.0.1:5000/api/dashboard_data
+            const response = await fetch(`${API_BASE_URL}/api/dashboard_data`);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const data = await response.json();
+
+            // Update Metrics
+            document.getElementById('totalTasks').textContent = data.metrics.totalTasks.toLocaleString();
+            document.getElementById('completedTasks').textContent = data.metrics.completedTasks.toLocaleString();
+            document.getElementById('highPriorityTasks').textContent = data.metrics.highPriorityTasks.toLocaleString();
+            document.getElementById('aiAccuracy').textContent = `${(data.metrics.aiAccuracy * 100).toFixed(1)}%`;
+            
+            // Initialize Charts with data from API
+            initializeCharts(data.charts);
+        } catch (error) {
+            console.error('Failed to fetch dashboard data:', error);
+            // This is the alert you are seeing. It will now only trigger if your python server is not running.
+            alert('Could not connect to the AI server. Please ensure the python app.py server is running.');
+        }
+    }
+
+    function initializeCharts(chartData) {
+        // Category Chart
+        new Chart(document.getElementById('categoryChart').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(chartData.categories),
+                datasets: [{ data: Object.values(chartData.categories), backgroundColor: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57', '#FF9FF3', '#54A0FF', '#5F27CD'] }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        });
+
+        // Priority Chart
+        new Chart(document.getElementById('priorityChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Low', 'Medium', 'High', 'Critical'], // Ensure order
+                datasets: [{
+                    data: ['Low', 'Medium', 'High', 'Critical'].map(p => chartData.priorities[p] || 0),
+                    backgroundColor: ['#48CAE4', '#0096C7', '#F77F00', '#D62828']
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+    }
+
+    // In templates/index.html, inside the <script> tag...
+
+    async function predictTask(event) {
+        event.preventDefault();
+        const description = document.getElementById('taskDescription').value;
+        const resultDiv = document.getElementById('predictionResult');
+        const predictBtn = event.target.querySelector('button');
+        
+        resultDiv.innerHTML = '<p>🔮 Asking the AI for a complete analysis...</p>';
+        predictBtn.disabled = true;
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/predict`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ description: description })
+            });
+
+            if (!response.ok) {
+                throw new Error('Prediction request failed');
+            }
+            
+            // The 'result' object now contains assignee, effort, and due_date!
+            const result = await response.json();
+
+            // --- NEW & IMPROVED DISPLAY ---
+            // This builds the new result box with all the information and icons.
+            resultDiv.innerHTML = `
+                <div class="prediction-result">
+                    <h4 style="color: #2d3748; margin-bottom: 15px;">🎯 AI Task Analysis Complete</h4>
+                    <p style="margin-bottom: 8px;"><strong>🏷️ Predicted Category:</strong> <span style="color: #667eea; font-weight: bold;">${result.category}</span></p>
+                    <p style="margin-bottom: 8px;"><strong>⚡ Predicted Priority:</strong> <span style="color: #764ba2; font-weight: bold;">${result.priority}</span></p>
+                    <hr style="margin: 15px 0; border: 1px solid #e2e8f0;">
+                    <p style="margin-bottom: 8px;"><strong>👤 Suggested Assignee:</strong> ${result.assignee}</p>
+                    <p style="margin-bottom: 8px;"><strong>💪 Estimated Effort:</strong> ${result.effort} Points</p>
+                    <p><strong>⏳ Suggested Due Date:</strong> ${result.due_date}</p>
+                </div>`;
+                
+        } catch (error) {
+            console.error("Prediction error:", error);
+            resultDiv.innerHTML = `<p style="color: red;">Error: Could not get prediction from server.</p>`;
+        } finally {
+            predictBtn.disabled = false;
+        }
+    }
+    document.addEventListener('DOMContentLoaded', initializeDashboard);
+</script>
+</body>
+</html>
