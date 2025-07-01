@@ -58,13 +58,23 @@ The system accepts a simple task description and provides AI-driven insights inc
 This project includes a sample synthetic dataset named tasks.csv, which contains 1,000 generated tasks. This dataset is created programmatically to simulate a realistic task management environment and serves as the foundation for training the AI models.
 You can generate your own version of this dataset by running the generate_dataset.py script.
 Dataset Generation Logic
-> The dataset is not random; it's created using a set of intelligent rules to ensure the data is both realistic and useful for machine learning:
-> Core Templates: Each of the 8 task categories (Development, Bug Fix, etc.) has a list of predefined, realistic task descriptions.
-  > Rule-Based Priority: Task priority is determined by two factors:
-  > Category Weighting: Each category has a different probability of being high or low priority. For instance, a Bug Fix is more likely to be Critical than a Documentation task.
-> Keyword Detection: Descriptions containing words like urgent, critical, or asap are automatically assigned a higher priority, mimicking real-world urgency.
-> Data Richness: Each task includes a full set of metadata, such as assignees, reporters, status, and realistic dates, to create a comprehensive dataset.
+#### Core Templates
+
+Each of the 8 task categories (Development, Bug Fix, etc.) has a list of predefined, realistic task descriptions.
+
+##### Rule-Based Priority
+
+Task priority is determined by two factors:
+
+- **Category Weighting**: Each category has a different probability of being high or low priority. For instance, a Bug Fix is more likely to be Critical than a Documentation task.
+- **Keyword Detection**: Descriptions containing words like urgent, critical, or asap are automatically assigned a higher priority, mimicking real-world urgency.
+
+##### Data Richness
+
+Each task includes a full set of metadata, such as assignees, reporters, status, and realistic dates, to create a comprehensive dataset.
+
 ### Dataset Schema
+
 The tasks.csv file contains the following columns:
 | Column Name           | Data Type | Description                                                    | Example                                   |
 | --------------------- | --------- | -------------------------------------------------------------- | ----------------------------------------- |
