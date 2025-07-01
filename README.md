@@ -6,7 +6,7 @@
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 A full-stack intelligent task management system that leverages **Natural Language Processing (NLP)** and **Machine Learning (ML)** to automatically analyze, classify, and prioritize tasks. Built with a Python/Flask backend and a dynamic, responsive frontend.
-> This project was developed during my 3-month internship at Infotact Solutions as a Data Science and Machine Learning Intern.
+> This project was developed during my **3-month internship at Infotact Solutions as a Data Science and Machine Learning Intern.**
 > It was my first end-to-end AI project, where I applied NLP and ML techniques to build a fully functional AI-powered task management system.
 The system accepts a simple task description and provides AI-driven insights including predicted category, priority level, suggested assignee, estimated effort, and due date.
 
